@@ -14,6 +14,7 @@
 #define KEYCODE_S 0x73
 #define KEYCODE_Z 0x7a
 #define KEYCODE_X 0x78
+#define KEYCODE_C 0x63
 #define KEYCODE_SPACE 0x20
 const int k_control_cycle = 100;
 
@@ -74,7 +75,7 @@ public:
   velocity_z(0),
   velocity_w(0),
   l_scale_(1000.0),
-  a_scale_(1000.0)
+  a_scale_(200.0)
   {
     nh_.param("scale_angular", a_scale_, a_scale_);
     nh_.param("scale_linear", l_scale_, l_scale_);
@@ -94,8 +95,8 @@ public:
     puts("↑ : foward      ↓ : backward");
     puts("← : left        → : right");
     puts("z : turn left   x : turn right");
-    puts("s : stop        b : all");
-    puts("q : quit");
+    puts("space : up      c : down");
+    puts("b : all         s : stop        q : quit");
 
 
     while (ros::ok())
@@ -116,58 +117,42 @@ public:
       {
         case KEYCODE_LEFT:
           ROS_DEBUG("LEFT");
-          velocity_x = 0.0;
           velocity_y += 0.01;
-          velocity_z = 0.0;
-          velocity_w = 0.0;
           dirty = true;
           break;
         case KEYCODE_RIGHT:
           ROS_DEBUG("RIGHT");
-          velocity_x = 0.0;
           velocity_y -= 0.01;
-          velocity_z = 0.0;
-          velocity_w = 0.0;
           dirty = true;
           break;
         case KEYCODE_UP:
           ROS_DEBUG("FOWARD");
           velocity_x += 0.01;
-          velocity_y = 0.0;
-          velocity_z = 0.0;
-          velocity_w = 0.0;
           dirty = true;
           break;
         case KEYCODE_DOWN:
           ROS_DEBUG("BACKWARD");
           velocity_x -= 0.01;
-          velocity_y = 0.0;
-          velocity_z = 0.0;
-          velocity_w = 0.0;
           dirty = true;
           break;
         case KEYCODE_Z:
           ROS_DEBUG("TURN LEFT");
-          velocity_x = 0.0;
-          velocity_y = 0.0;
-          velocity_z = 0.0;
           velocity_w += 0.01;
           dirty = true;
           break;
         case KEYCODE_X:
           ROS_DEBUG("TURN RIGHT");
-          velocity_x = 0.0;
-          velocity_y = 0.0;
-          velocity_z = 0.0;
           velocity_w -= 0.01;
           dirty = true;
           break;
         case KEYCODE_SPACE:
           ROS_DEBUG("UP");
-          velocity_x = 0.0;
-          velocity_y = 0.0;
           velocity_z += 0.01;
-          velocity_w = 0.0;
+          dirty = true;
+          break;
+        case KEYCODE_C:
+          ROS_DEBUG("DOWN");
+          velocity_z -= 0.01;
           dirty = true;
           break;
         case KEYCODE_B:
@@ -196,7 +181,7 @@ public:
       if(velocity_y > 1.0)velocity_y = 1.0;
       else if(velocity_y < -1.0)velocity_y = -1.0;
       if(velocity_z > 1.0)velocity_z = 1.0;
-      else if(velocity_z < -1.0)velocity_z = -1.0;
+      else if(velocity_z < 0.0)velocity_z = 0.0;
       if(velocity_w > 1.0)velocity_w = 1.0;
       else if(velocity_w < -1.0)velocity_w = -1.0;
 
