@@ -26,18 +26,23 @@ Publisher Node 코드
 ```
 #include <ros/ros.h>
 #include <std_msgs/Int16.h>
+
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "pub_node");
   ros::NodeHandle nh;
+
   ros::Publisher pub_number = nh.advertise<std_msgs::Int16>("/test/topic", 10, true);
+
   ros::Rate loop_rate(1);
   std_msgs::Int16 count;
+
   while(ros::ok())
   {
     pub_number.publish(count);
     ROS_INFO("pub %d", count.data);
     count.data++;
+
     ros::spinOnce();
     loop_rate.sleep();
   }
@@ -48,15 +53,19 @@ Subscriber Node 코드
 ```
 #include <ros/ros.h>
 #include <std_msgs/Int16.h>
+
 void NumberCallback(const std_msgs::Int16 &msg)
 {
   ROS_INFO("sub %d", msg.data);
 }
+
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "sub_node");
   ros::NodeHandle nh;
+
   ros::Subscriber sub_number = nh.subscribe("/test/topic", 10, NumberCallback);
+
   ros::spin();
 }
 ```
@@ -66,6 +75,7 @@ CMakeLists.txt에 새 노드 등록하기
 add_executable(pub_node src/pub_node.cpp)
 add_dependencies(pub_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(pub_node ${catkin_LIBRARIES})
+
 add_executable(sub_node src/sub_node.cpp)
 add_dependencies(sub_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(sub_node ${catkin_LIBRARIES})
