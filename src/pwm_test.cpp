@@ -40,8 +40,10 @@ void SetPwmDutycycle(int rate)
     ROS_WARN("Invalid Dutycycle.");
     for (int i = 0; i < k_pins; i++) set_PWM_dutycycle(pi_num, k_pin_nums[i], 0);
   }
-
-  for (int i = 0; i < k_pins; i++) set_PWM_dutycycle(pi_num, k_pin_nums[i], rate);
+  else
+  {
+    for (int i = 0; i < k_pins; i++) set_PWM_dutycycle(pi_num, k_pin_nums[i], rate);
+  }
 }
 
 int main(int argc, char **argv)
